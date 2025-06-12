@@ -1,24 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Delivery Boy Portal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Delivery Boy Portal – Suriyawan Saffari</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #eaf6ff;
-      padding: 20px;
-      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      background: #eafaf1;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 {
-      color: #0077cc;
+
+    header {
+      background-color: #00b894;
+      color: white;
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .dashboard {
+      margin-top: 30px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .status {
+      color: green;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #00cec9;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px 5px 0 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #00b894;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #999;
     }
   </style>
 </head>
 <body>
-  <h1 id="welcome-msg">Loading...</h1>
 
-  <p>📦 Assigned deliveries will appear in the console.</p>
+  <header>
+    🚚 Suriyawan Saffari – Delivery Boy Portal
+  </header>
+
+  <div class="dashboard">
+    <h2 id="welcome-msg">Connecting to Backend...</h2>
+    <p class="status" id="status-msg">Awaiting API Response...</p>
+
+    <button class="btn">📦 Generate RunSheet</button>
+    <button class="btn">📍 Track Delivery</button>
+    <button class="btn">📝 Update Parcel Status</button>
+  </div>
+
+  <footer>
+    © 2025 Suriyawan Saffari | Delivery Engine
+  </footer>
 
   <script src="script.js"></script>
 </body>
