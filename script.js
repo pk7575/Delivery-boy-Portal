@@ -1,22 +1,174 @@
-// Delivery Boy Portal Script
+ // Delivery Boy Portal Script (D1–D25)
 
 // 👇 Backend base URL
 const BASE_URL = "https://suriyawan-saffari-backend.onrender.com";
 
-// Example - Delivery Boy Dashboard Load
+// D1: DOM Load
 document.addEventListener("DOMContentLoaded", () => {
   const welcome = document.getElementById("welcome-msg");
   if (welcome) {
     welcome.innerText = "🚚 Delivery Boy Dashboard Connected to Backend!";
   }
 
-  // Example - Fetch assigned deliveries
+  loadAssignedDeliveries();
+});
+
+// D2: Load Assigned Deliveries
+function loadAssignedDeliveries() {
   fetch(`${BASE_URL}/api/delivery/assignments`)
     .then(res => res.json())
     .then(data => {
       console.log("📦 Assigned Deliveries:", data);
+      renderDeliveries(data);
     })
     .catch(err => {
       console.error("❌ Error connecting to backend:", err);
     });
-});
+}
+
+// D3: Render Delivery Cards
+function renderDeliveries(deliveries) {
+  const container = document.getElementById("delivery-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+  deliveries.forEach(order => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <h3>📦 Order #${order.trackingId}</h3>
+      <p><strong>Customer:</strong> ${order.customerName}</p>
+      <p><strong>Address:</strong> ${order.address}</p>
+      <p><strong>Phone:</strong> <a href="tel:${order.phone}">${order.phone}</a></p>
+      <p><strong>COD:</strong> ₹${order.cod}</p>
+      <button onclick="markPickedUp('${order._id}')">✅ Picked Up</button>
+      <button onclick="markDelivered('${order._id}')">📬 Delivered</button>
+      <button onclick="navigateTo('${order.lat}','${order.lng}')">📍 Navigate</button>
+      <button onclick="collectCash('${order._id}', ${order.cod})">💰 Cash Received</button>
+      <input type="file" accept="image/*" onchange="uploadProof(event, '${order._id}')" />
+    `;
+    container.appendChild(div);
+  });
+}
+
+// D4: Mark Order Picked Up
+function markPickedUp(id) {
+  fetch(`${BASE_URL}/api/delivery/pickup/${id}`, { method: "POST" })
+    .then(res => res.json())
+    .then(res => {
+      alert("✅ Pickup marked");
+      loadAssignedDeliveries();
+    });
+}
+
+// D5: Mark Order Delivered
+function markDelivered(id) {
+  fetch(`${BASE_URL}/api/delivery/delivered/${id}`, { method: "POST" })
+    .then(res => res.json())
+    .then(res => {
+      alert("📬 Delivery marked");
+      loadAssignedDeliveries();
+    });
+}
+
+// D6: Upload Proof Image
+function uploadProof(event, id) {
+  const file = event.target.files[0];
+  const formData = new FormData();
+  formData.append("image", file);
+
+  fetch(`${BASE_URL}/api/delivery/proof/${id}`, {
+    method: "POST",
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(res => {
+      alert("📸 Proof uploaded");
+    });
+}
+
+// D7: Navigate via Google Maps
+function navigateTo(lat, lng) {
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
+}
+
+// D8: Cash Collection
+function collectCash(id, amount) {
+  fetch(`${BASE_URL}/api/delivery/collect/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount }),
+  })
+    .then(res => res.json())
+    .then(res => {
+      alert("💰 Cash collected recorded");
+    });
+}
+
+// D9: Chat with AI Assistant
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  fetch(`${BASE_URL}/api/ai/delivery-chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+  })
+    .then(res => res.json())
+    .then(data => {
+      const responseBox = document.getElementById("chatResponse");
+      responseBox.innerText = "🤖 " + data.reply;
+    });
+
+  input.value = "";
+}
+
+// D10: Load Salary Info
+function loadSalary() {
+  fetch(`${BASE_URL}/api/delivery/salary`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("salary-box").innerText = `💼 Total Salary: ₹${data.total}`;
+    });
+}
+
+// D11: Daily Shift Start
+function startShift() {
+  fetch(`${BASE_URL}/api/delivery/start-shift`, { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+      alert("🚦 Shift started");
+    });
+}
+
+// D12: Daily Shift End
+function endShift() {
+  fetch(`${BASE_URL}/api/delivery/end-shift`, { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+      alert("🏁 Shift ended");
+    });
+}
+
+// D13: Live Notification (Example)
+setInterval(() => {
+  fetch(`${BASE_URL}/api/delivery/notifications`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.newAssignment) {
+        alert("🆕 New order assigned!");
+        loadAssignedDeliveries();
+      }
+    });
+}, 10000); // check every 10 seconds
+
+// D14: Referral Delivery Bonus
+function checkReferralBonus() {
+  fetch(`${BASE_URL}/api/delivery/referral-bonus`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("bonus-box").innerText = `🎁 Bonus: ₹${data.bonus}`;
+    });
+}
