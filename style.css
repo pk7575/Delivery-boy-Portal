@@ -62,6 +62,7 @@ header {
   border-radius: 10px;
   margin: 15px 0;
   box-shadow: 0 0 5px rgba(0,0,0,0.08);
+  border-left: 4px solid #00cec9;
 }
 
 .card h4 {
@@ -97,18 +98,21 @@ footer {
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
   width: 95%;
   max-width: 750px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 #chatbox input {
-  width: 75%;
+  flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
+  min-width: 0;
 }
 
 #chatbox button {
   padding: 10px 15px;
-  margin-left: 8px;
   background-color: #0984e3;
   color: #fff;
   border: none;
@@ -120,6 +124,7 @@ footer {
   margin-top: 10px;
   font-size: 14px;
   color: #333;
+  width: 100%;
 }
 
 .salary-info, .bonus-info {
@@ -136,6 +141,10 @@ footer {
   .btn {
     width: 100%;
     margin: 5px 0;
+  }
+
+  #chatbox {
+    flex-direction: column;
   }
 
   #chatbox input, #chatbox button {
