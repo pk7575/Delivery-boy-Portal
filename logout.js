@@ -1,37 +1,41 @@
 // logout.js
 
-// 🔐 Logout function
+// 🔐 Universal Logout Function
 function logoutUser() {
-  // 🧹 Clear localStorage tokens
+  // 🧹 Clear localStorage tokens & data for all portals
   localStorage.removeItem("ownerToken");
   localStorage.removeItem("sellerToken");
   localStorage.removeItem("customerToken");
   localStorage.removeItem("deliveryToken");
+
   localStorage.removeItem("ownerData");
   localStorage.removeItem("sellerData");
   localStorage.removeItem("customerData");
   localStorage.removeItem("deliveryData");
 
-  // 🔁 Optional: Clear session storage (if used)
+  // 🔁 Clear sessionStorage if any
   sessionStorage.clear();
 
-  // 🚪 Redirect to login page
-  if (window.location.pathname.includes("owner")) {
+  // 🚪 Redirect to respective login page based on folder/portal
+  const path = window.location.pathname.toLowerCase();
+
+  if (path.includes("owner")) {
     window.location.href = "login.html";
-  } else if (window.location.pathname.includes("seller")) {
+  } else if (path.includes("seller")) {
     window.location.href = "../seller/login.html";
-  } else if (window.location.pathname.includes("customer")) {
+  } else if (path.includes("customer")) {
     window.location.href = "../customer/login.html";
-  } else if (window.location.pathname.includes("delivery")) {
+  } else if (path.includes("delivery")) {
     window.location.href = "../delivery/login.html";
   } else {
+    // Default fallback
     window.location.href = "login.html";
   }
 }
 
-// 🔘 Event listener (if logout button exists)
+// 🔘 Event listener (only if logout button exists)
 document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("logout-btn");
+  const logoutBtn = document.getElementById("logout-btn") || document.querySelector(".logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
       e.preventDefault();
