@@ -1,4 +1,4 @@
- // Delivery Boy Portal Script (D1–D25)
+// Delivery Boy Portal Script (D1–D25)
 
 // 👇 Backend base URL
 const BASE_URL = "https://suriyawan-saffari-backend.onrender.com";
@@ -11,18 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadAssignedDeliveries();
+  loadSalary();
+  checkReferralBonus();
 });
 
 // D2: Load Assigned Deliveries
 function loadAssignedDeliveries() {
-  fetch(`${BASE_URL}/api/delivery/assignments`)
+  const token = localStorage.getItem("deliveryToken");
+  if (!token) return;
+
+  fetch(`${BASE_URL}/api/delivery/assignments`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
     .then(res => res.json())
     .then(data => {
       console.log("📦 Assigned Deliveries:", data);
       renderDeliveries(data);
     })
     .catch(err => {
-      console.error("❌ Error connecting to backend:", err);
+      console.error("❌ Error fetching deliveries:", err);
     });
 }
 
@@ -53,9 +60,11 @@ function renderDeliveries(deliveries) {
 
 // D4: Mark Order Picked Up
 function markPickedUp(id) {
-  fetch(`${BASE_URL}/api/delivery/pickup/${id}`, { method: "POST" })
+  fetch(`${BASE_URL}/api/delivery/pickup/${id}`, {
+    method: "POST"
+  })
     .then(res => res.json())
-    .then(res => {
+    .then(() => {
       alert("✅ Pickup marked");
       loadAssignedDeliveries();
     });
@@ -63,9 +72,11 @@ function markPickedUp(id) {
 
 // D5: Mark Order Delivered
 function markDelivered(id) {
-  fetch(`${BASE_URL}/api/delivery/delivered/${id}`, { method: "POST" })
+  fetch(`${BASE_URL}/api/delivery/delivered/${id}`, {
+    method: "POST"
+  })
     .then(res => res.json())
-    .then(res => {
+    .then(() => {
       alert("📬 Delivery marked");
       loadAssignedDeliveries();
     });
@@ -74,15 +85,17 @@ function markDelivered(id) {
 // D6: Upload Proof Image
 function uploadProof(event, id) {
   const file = event.target.files[0];
+  if (!file) return;
+  
   const formData = new FormData();
   formData.append("image", file);
 
   fetch(`${BASE_URL}/api/delivery/proof/${id}`, {
     method: "POST",
-    body: formData,
+    body: formData
   })
     .then(res => res.json())
-    .then(res => {
+    .then(() => {
       alert("📸 Proof uploaded");
     });
 }
@@ -97,29 +110,29 @@ function collectCash(id, amount) {
   fetch(`${BASE_URL}/api/delivery/collect/${id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify({ amount })
   })
     .then(res => res.json())
-    .then(res => {
-      alert("💰 Cash collected recorded");
+    .then(() => {
+      alert("💰 Cash collection recorded");
     });
 }
 
 // D9: Chat with AI Assistant
 function sendMessage() {
   const input = document.getElementById("userInput");
-  const message = input.value.trim();
+  const message = input?.value.trim();
   if (!message) return;
 
   fetch(`${BASE_URL}/api/ai/delivery-chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message })
   })
     .then(res => res.json())
     .then(data => {
       const responseBox = document.getElementById("chatResponse");
-      responseBox.innerText = "🤖 " + data.reply;
+      if (responseBox) responseBox.innerText = "🤖 " + data.reply;
     });
 
   input.value = "";
@@ -130,7 +143,8 @@ function loadSalary() {
   fetch(`${BASE_URL}/api/delivery/salary`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("salary-box").innerText = `💼 Total Salary: ₹${data.total}`;
+      const salaryBox = document.getElementById("salary-box");
+      if (salaryBox) salaryBox.innerText = `💼 Total Salary: ₹${data.total}`;
     });
 }
 
@@ -138,7 +152,7 @@ function loadSalary() {
 function startShift() {
   fetch(`${BASE_URL}/api/delivery/start-shift`, { method: "POST" })
     .then(res => res.json())
-    .then(data => {
+    .then(() => {
       alert("🚦 Shift started");
     });
 }
@@ -147,12 +161,12 @@ function startShift() {
 function endShift() {
   fetch(`${BASE_URL}/api/delivery/end-shift`, { method: "POST" })
     .then(res => res.json())
-    .then(data => {
+    .then(() => {
       alert("🏁 Shift ended");
     });
 }
 
-// D13: Live Notification (Example)
+// D13: Live Notification (every 10 sec)
 setInterval(() => {
   fetch(`${BASE_URL}/api/delivery/notifications`)
     .then(res => res.json())
@@ -162,13 +176,14 @@ setInterval(() => {
         loadAssignedDeliveries();
       }
     });
-}, 10000); // check every 10 seconds
+}, 10000);
 
 // D14: Referral Delivery Bonus
 function checkReferralBonus() {
   fetch(`${BASE_URL}/api/delivery/referral-bonus`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("bonus-box").innerText = `🎁 Bonus: ₹${data.bonus}`;
+      const bonusBox = document.getElementById("bonus-box");
+      if (bonusBox) bonusBox.innerText = `🎁 Bonus: ₹${data.bonus}`;
     });
 }
