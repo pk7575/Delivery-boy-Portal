@@ -112,6 +112,10 @@
         width: 100%;
         margin: 5px 0;
       }
+      #chatbox {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -136,7 +140,9 @@
     <div id="bonus-box" class="status">🎁 Referral Bonus: Loading...</div>
 
     <h3>📦 Assigned Deliveries:</h3>
-    <div id="delivery-list"></div>
+    <div id="delivery-list">
+      <!-- JS will insert delivery cards here -->
+    </div>
   </div>
 
   <div class="dashboard" id="chatbox">
@@ -150,6 +156,43 @@
     © 2025 Suriyawan Saffari | AI + GPS + Salary + Referral System Enabled
   </footer>
 
-  <script src="script.js"></script>
+  <script defer>
+    // Safe load message on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('welcome-msg').innerText = "🟢 Connected to Delivery System!";
+      document.getElementById('status-msg').innerText = "✅ Ready for Actions";
+    });
+
+    function startShift() {
+      // Implement with backend connection
+      document.getElementById('status-msg').innerText = "🕒 Shift Started!";
+    }
+
+    function endShift() {
+      document.getElementById('status-msg').innerText = "🛑 Shift Ended.";
+    }
+
+    function loadSalary() {
+      document.getElementById('salary-box').innerText = "💼 Salary: ₹20/order × 5 = ₹100 (example)";
+    }
+
+    function checkReferralBonus() {
+      document.getElementById('bonus-box').innerText = "🎁 Bonus: ₹10 from 2 referrals = ₹20";
+    }
+
+    function sendMessage() {
+      const userInput = document.getElementById("userInput").value.trim();
+      const responseBox = document.getElementById("chatResponse");
+      if (userInput.length === 0) {
+        responseBox.innerText = "⚠️ Please enter a question.";
+        return;
+      }
+      responseBox.innerText = "🤖 Thinking...";
+      setTimeout(() => {
+        responseBox.innerText = "📦 You asked: " + userInput + "\n✅ (Smart response from AI system coming soon...)";
+      }, 1000);
+    }
+  </script>
+
 </body>
 </html>
